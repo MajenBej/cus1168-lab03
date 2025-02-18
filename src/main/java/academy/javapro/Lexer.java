@@ -35,8 +35,11 @@ public class Lexer {
      * @param input The source code string to be tokenized
      */
     public Lexer(String input) {
-        // Your code here
+        this.input = input;
+        this.tokens = new ArrayList<>();
+        this.position = 0;
     }
+
 
     /**
      * TODO: Process the input string and break it into tokens
@@ -52,8 +55,29 @@ public class Lexer {
      *      c. Update position by adding length of matched text
      * 4. If no pattern matches, throw RuntimeException for invalid input
      */
+
     public void tokenize() {
-        // Your code here
+        while (position < input.length()) {
+            String remainingInput = input.substring(position);
+            boolean matched = false;
+
+            for (int i = 0; i < PATTERNS.length; i++) {
+                Matcher matcher = PATTERNS[i].matcher(remainingInput);
+                if (matcher.lookingAt()) {
+                    String match = matcher.group();
+                    if (!TYPES[i].equals("WHITESPACE")) {
+                        tokens.add(new String[]{TYPES[i], match});
+                    }
+                    position += match.length();
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if (!matched) {
+                throw new RuntimeException("Unexpected character at position " + position + ": " + input.charAt(position));
+            }
+        }
     }
 
     /**
@@ -67,7 +91,7 @@ public class Lexer {
      */
     public List<String[]> getTokens() {
         // Your code here
-        return null;
+        return tokens;
     }
 
     public static void main(String[] args) {
